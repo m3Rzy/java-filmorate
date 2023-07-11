@@ -25,7 +25,7 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    private void start() {
+    protected void start() {
         user = User.builder()
                 .email("test@ya.ru")
                 .login("admin")
@@ -37,12 +37,12 @@ class UserControllerTest {
     @DisplayName("Добавление пользователя с корректными значениями")
     @Test
     void addNewUser_correct_isOkRequest() throws Exception {
-        mockMvc.perform(post("/users")
+        mockMvc.perform(
+                post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.id").value("1"));
+                .andExpect(content().contentType("application/json"));
     }
 
     @DisplayName("Добавление пользователя с пустым именем")

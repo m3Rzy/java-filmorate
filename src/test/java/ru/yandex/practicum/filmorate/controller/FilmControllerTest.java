@@ -25,7 +25,7 @@ class FilmControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    private void start() {
+    protected void start() {
         film = Film.builder()
                 .name("Фильм 1№")
                 .description("Описание фильма")
