@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = FilmController.class)
+@DisplayName("Контроллер фильма")
 class FilmControllerTest {
 
     private Film film;
@@ -33,7 +34,7 @@ class FilmControllerTest {
                 .build();
     }
 
-    @DisplayName("Добавление фильма с корректными значениями переменных")
+    @DisplayName("Добавление фильма с корректными значениями")
     @Test
     void addNewFilm_correct_isOkRequest() throws Exception {
         mockMvc.perform(
@@ -56,7 +57,7 @@ class FilmControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("Добавление фильма с некорректным значением описания")
+    @DisplayName("Добавление фильма с описанием больше 200 символов")
     @Test
     void addNewFilm_incorrectDescription_isBadRequest() throws Exception {
         film.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
