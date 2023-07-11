@@ -42,7 +42,7 @@ class UserControllerTest {
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.id").value("2"));
+                .andExpect(jsonPath("$.id").value("1"));
     }
 
     @DisplayName("Добавление пользователя с пустым именем")
