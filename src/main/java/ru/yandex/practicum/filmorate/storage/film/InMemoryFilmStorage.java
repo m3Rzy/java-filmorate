@@ -54,7 +54,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         film.setLikes(new HashSet<>());
         film.setId(getIdFilm());
         films.put(film.getId(), film);
-        log.info("Запрос на добавление фильма пройден.");
         return film;
     }
 
@@ -64,10 +63,8 @@ public class InMemoryFilmStorage implements FilmStorage {
             filmValidation(film);
             film.setLikes(new HashSet<>());
             films.put(film.getId(), film);
-            log.info("Поступил запрос на изменение фильма. Фильм изменён.");
         } else {
-            log.error("Поступил запрос на изменение фильма. Фильм не найден.");
-            throw new BadRequestException("Film not found.");
+            throw new BadRequestException("Фильм не был найден.");
         }
         return film;
     }

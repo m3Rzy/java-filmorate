@@ -13,7 +13,6 @@ import java.util.Set;
 @Data
 @Builder
 public class User {
-
     private Integer id;
     @Email
     @NonNull

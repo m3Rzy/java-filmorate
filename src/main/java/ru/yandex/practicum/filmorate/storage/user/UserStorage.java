@@ -28,5 +28,5 @@ public interface UserStorage {
     User removeFriend(Integer userId, Integer friendId);
 
     //    обновление списка друзей
-    List<User> updateFriends(Integer id, Integer friendId);
+    List<User> getCommonFriends(Integer id, Integer friendId);
 }

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.util.BadRequestException;
@@ -12,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
@@ -28,7 +26,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User getUserById(int id) {
         if (users.containsKey(id)) {
             return users.get(id);
-        } else throw new BadRequestException("User not found.");
+        } else throw new BadRequestException("Пользователь не был создан.");
     }
 
     private int getUserId() {
@@ -36,7 +34,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private void userValidation(User user) throws ValidationException {
-        if (user.getName() == null) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
     }
@@ -47,7 +45,6 @@ public class InMemoryUserStorage implements UserStorage {
         user.setFriends(new HashSet<>());
         user.setId(getUserId());
         users.put(user.getId(), user);
-        log.info("Запрос на создание пользователя пройден.");
         return user;
     }
 
@@ -57,10 +54,8 @@ public class InMemoryUserStorage implements UserStorage {
             userValidation(user);
             user.setFriends(new HashSet<>());
             users.put(user.getId(), user);
-            log.info("Запрос на изменение пользователя пройден.");
         } else {
-            log.error("Запрос на изменение пользователя не пройден.");
-            throw new BadRequestException("Не удалось найти указанного пользователя.");
+            throw new BadRequestException("Не удалось найти указанного пользователя." + user);
         }
         return user;
     }
@@ -87,10 +82,10 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> updateFriends(Integer id, Integer friendId) {
+    public List<User> getCommonFriends(Integer id, Integer otherId) {
         List<User> friends = new ArrayList<>();
         for (Integer i : getUserById(id).getFriends()) {
-            if (getUserById(friendId).getFriends().contains(i)) {
+            if (getUserById(otherId).getFriends().contains(i)) {
                 friends.add(getUserById(i));
             }
         }
