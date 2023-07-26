@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.BadRequestException;
 import ru.yandex.practicum.filmorate.util.ValidationException;
 
@@ -10,51 +12,38 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/films", produces = "application/json")
 public class FilmController {
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
-    private int filmId = 0;
+    private final FilmStorage filmStorage;
 
     @GetMapping
     public List<Film> getFilms() {
-        return new ArrayList<>(films.values());
+        log.info("GET-запрос на получение всех фильмов.");
+        return filmStorage.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable String id) {
+        log.info("GET-запрос на получение фильма по id.");
+        return filmStorage.getFilmById(Integer.parseInt(id));
     }
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
-        filmValidation(film);
-        film.setId(getIdFilm());
-        films.put(film.getId(), film);
-        log.info("Запрос на добавление фильма пройден.");
-        return film;
+        log.info("POST-запрос на создание фильма.");
+        return filmStorage.addFilm(film);
     }
 
     @PutMapping
-    public Film changeFilm(@Valid @RequestBody Film film) {
-        if (films.get(film.getId()) != null) {
-            filmValidation(film);
-            films.put(film.getId(), film);
-            log.info("Запрос на изменение фильма пройден.");
-        } else {
-            log.error("Запрос на изменении фильма не пройден.");
-            throw new BadRequestException("Не удалось найти указанный фильм.");
-        }
-        return film;
-    }
-
-
-    private int getIdFilm() {
-        return ++filmId;
-    }
-
-    private void filmValidation(Film film) throws ValidationException {
-        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
-            throw new ValidationException("Некорректно указана дата релиза текущего фильма.");
-        }
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        log.info("PUT-запрос на изменение существующего фильма.");
+        return filmStorage.updateFilm(film);
     }
 }
