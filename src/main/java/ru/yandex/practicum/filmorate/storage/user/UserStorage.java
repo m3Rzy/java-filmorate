@@ -7,10 +7,10 @@ import java.util.List;
 public interface UserStorage {
 
     //    получение всех пользователей
-    List<User> getUsers();
+    List<User> findUsers();
 
     //    получение пользователя по id
-    User getUserById(int id);
+    User findUserById(int id);
 
     //    создание нового пользователя
     User addUser(User user);
@@ -19,7 +19,7 @@ public interface UserStorage {
     User updateUser(User user);
 
     //    получение списка друзей у пользователя по id
-    List<User> getFriendsByUserId(Integer id);
+    List<User> findFriendsByUserId(Integer id);
 
     //    добавление в список друзей
     User addFriend(Integer userId, Integer friendId);
@@ -28,5 +28,5 @@ public interface UserStorage {
     User removeFriend(Integer userId, Integer friendId);
 
     //    обновление списка друзей
-    List<User> getCommonFriends(Integer id, Integer friendId);
+    List<User> findCommonFriends(Integer id, Integer friendId);
 }

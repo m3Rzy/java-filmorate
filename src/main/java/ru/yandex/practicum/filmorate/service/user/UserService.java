@@ -15,19 +15,19 @@ public class UserService {
 
     public User addFriend(int userId, int friendId) {
         userStorage.addFriend(userId, friendId);
-        return userStorage.getUserById(userId);
+        return userStorage.findUserById(userId);
     }
 
     public User removeFriend(int userId, int friendId) {
         userStorage.removeFriend(userId, friendId);
-        return userStorage.getUserById(userId);
+        return userStorage.findUserById(userId);
     }
 
     public List<User> getFriendsByUserId(Integer id) {
-        return userStorage.getFriendsByUserId(id);
+        return userStorage.findFriendsByUserId(id);
     }
 
     public List<User> getCommonFriends(int userId, int otherId) {
-        return userStorage.getCommonFriends(userId, otherId);
+        return userStorage.findCommonFriends(userId, otherId);
     }
 }

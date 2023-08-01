@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.util.BadRequestException;
+import ru.yandex.practicum.filmorate.util.NotFoundException;
 import ru.yandex.practicum.filmorate.util.ValidationException;
 
 import java.time.LocalDate;
@@ -20,15 +20,17 @@ public class InMemoryFilmStorage implements FilmStorage {
     private int id = 0;
 
     @Override
-    public List<Film> getFilms() {
+    public List<Film> findFilms() {
         return new ArrayList<>(films.values());
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film findFilmById(int id) {
         if (films.containsKey(id)) {
             return films.get(id);
-        } else throw new BadRequestException("Фильм не был найден.");
+        } else {
+            throw new NotFoundException("Фильм не был найден.");
+        }
     }
 
     private int getIdFilm() {
@@ -64,7 +66,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             film.setLikes(new HashSet<>());
             films.put(film.getId(), film);
         } else {
-            throw new BadRequestException("Фильм не был найден.");
+            throw new NotFoundException("Фильм не был найден.");
         }
         return film;
     }

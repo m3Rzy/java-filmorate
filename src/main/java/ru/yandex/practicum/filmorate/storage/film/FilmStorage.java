@@ -6,10 +6,10 @@ import java.util.List;
 
 public interface FilmStorage {
     //    список всех фильмов
-    List<Film> getFilms();
+    List<Film> findFilms();
 
     //    получение фильма по id
-    Film getFilmById(int id);
+    Film findFilmById(int id);
 
     //    добавление нового фильма
     Film addFilm(Film film);

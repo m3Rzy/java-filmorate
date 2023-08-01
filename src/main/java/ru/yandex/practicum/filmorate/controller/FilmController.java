@@ -21,44 +21,37 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms() {
-        log.info("GET-запрос на получение всех фильмов.");
-        return filmStorage.getFilms();
+        return filmStorage.findFilms();
     }
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable String id) {
-        log.info("GET-запрос на получение фильма по id.");
-        return filmStorage.getFilmById(Integer.parseInt(id));
+        return filmStorage.findFilmById(Integer.parseInt(id));
     }
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
-        log.info("POST-запрос на создание фильма.");
         return filmStorage.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        log.info("PUT-запрос на изменение существующего фильма.");
         return filmStorage.updateFilm(film);
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") String count) {
-        log.info("GET-запрос на получение популярных фильмов.");
-        return filmService.getTopFilms(Integer.parseInt(count));
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.getTopFilms(count);
     }
 
     @PutMapping("/{id}/like/{filmId}")
-    public void addLike(@PathVariable String id, @PathVariable String filmId) {
-        log.info("PUT-запрос на добавление лайка к фильму по id.");
-        filmService.addLike(Integer.parseInt(id), Integer.parseInt(filmId));
+    public void addLike(@PathVariable String id, @PathVariable Integer filmId) {
+        filmService.addLike(Integer.parseInt(id), filmId);
     }
 
     @DeleteMapping("/{id}/like/{filmId}")
-    public void removeLike(@PathVariable String id, @PathVariable String filmId) {
-        log.info("DELETE-запрос на удаление лайка у фильма по id.");
-        filmService.removeLike(Integer.parseInt(id), Integer.parseInt(filmId));
+    public void removeLike(@PathVariable String id, @PathVariable Integer filmId) {
+        filmService.removeLike(Integer.parseInt(id), filmId);
     }
 
 }
