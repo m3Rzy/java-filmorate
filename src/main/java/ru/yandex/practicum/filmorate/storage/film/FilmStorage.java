@@ -12,9 +12,9 @@ public interface FilmStorage {
     Film findFilmById(int id);
 
     //    добавление нового фильма
-    Film addFilm(Film film);
+    void addFilmStorage(Film film);
 
     //    изменение существующего фильма
-    Film updateFilm(Film film);
+    Film updateFilmStorage(Film film);
 
 }

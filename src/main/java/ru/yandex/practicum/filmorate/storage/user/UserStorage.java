@@ -13,20 +13,20 @@ public interface UserStorage {
     User findUserById(int id);
 
     //    создание нового пользователя
-    User addUser(User user);
+    void addUserStorage(User user);
 
     //    изменение существующего пользователя
-    User updateUser(User user);
+    User updateUserStorage(User user);
 
     //    получение списка друзей у пользователя по id
-    List<User> findFriendsByUserId(Integer id);
+    List<User> findFriendsByUserIdStorage(Integer id);
 
     //    добавление в список друзей
-    User addFriend(Integer userId, Integer friendId);
+    User addFriendStorage(Integer userId, Integer friendId);
 
     //    удаление друга из списка
-    User removeFriend(Integer userId, Integer friendId);
+    User removeFriendStorage(Integer userId, Integer friendId);
 
     //    обновление списка друзей
-    List<User> findCommonFriends(Integer id, Integer friendId);
+    List<User> findCommonFriendsStorage(Integer id, Integer friendId);
 }
