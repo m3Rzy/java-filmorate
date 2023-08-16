@@ -10,10 +10,6 @@ CREATE TABLE IF NOT EXISTS films ()
 SELECT * FROM films
 ```
 ```sql
--- удаление таблицы `films`
-DROP TALBE films
-```
-```sql
 -- названия 10 популярных фильмов
 SELECT name
     FROM film
