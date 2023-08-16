@@ -1,60 +1,56 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.util.BadRequestException;
-import ru.yandex.practicum.filmorate.util.ValidationException;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/films", produces = "application/json")
 public class FilmController {
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
-    private int filmId = 0;
+    private final FilmService filmService;
 
     @GetMapping
     public List<Film> getFilms() {
-        return new ArrayList<>(films.values());
+        return filmService.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        filmValidation(film);
-        film.setId(getIdFilm());
-        films.put(film.getId(), film);
-        log.info("Запрос на добавление фильма пройден.");
-        return film;
+    public Optional<Film> addFilm(@Valid @RequestBody Film film) {
+        return Optional.ofNullable(filmService.addFilm(film));
     }
 
     @PutMapping
-    public Film changeFilm(@Valid @RequestBody Film film) {
-        if (films.get(film.getId()) != null) {
-            filmValidation(film);
-            films.put(film.getId(), film);
-            log.info("Запрос на изменение фильма пройден.");
-        } else {
-            log.error("Запрос на изменении фильма не пройден.");
-            throw new BadRequestException("Не удалось найти указанный фильм.");
-        }
-        return film;
+    public Optional<Film> updateFilm(@Valid @RequestBody Film film) {
+        return Optional.ofNullable(filmService.updateFilm(film));
     }
 
-
-    private int getIdFilm() {
-        return ++filmId;
+    @GetMapping("/popular")
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.getTopFilms(count);
     }
 
-    private void filmValidation(Film film) throws ValidationException {
-        if (film.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
-            throw new ValidationException("Некорректно указана дата релиза текущего фильма.");
-        }
+    @PutMapping("/{id}/like/{filmId}")
+    public void addLike(@PathVariable Integer id, @PathVariable Integer filmId) {
+        filmService.addLike(id, filmId);
     }
+
+    @DeleteMapping("/{id}/like/{filmId}")
+    public void removeLike(@PathVariable Integer id, @PathVariable Integer filmId) {
+        filmService.removeLike(id, filmId);
+    }
+
 }
