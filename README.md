@@ -1,5 +1,5 @@
 # java-filmorate
->['Filmorate' - ER-диаграмма](https://github.com/m3Rzy/java-filmorate/blob/main/README.md)
+>['Filmorate' - ER-диаграмма](https://github.com/m3Rzy/java-filmorate/blob/main/Filmorate_ER-диаграмма.png)
 # Пример запросов для основных операций:
 ```sql
 -- создание таблицы `films`
@@ -11,7 +11,7 @@ SELECT * FROM films
 ```
 ```sql
 -- удаление таблицы `films`
-DROP TALBE films CASCADE
+DROP TALBE films
 ```
 ```sql
 -- названия 10 популярных фильмов
