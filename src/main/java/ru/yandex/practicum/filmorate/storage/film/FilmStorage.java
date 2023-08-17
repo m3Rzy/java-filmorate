@@ -24,5 +24,5 @@ public interface FilmStorage {
     Film removeLike(int filmId, int userId);
 
     // список популярных фильмов
-    List<Film> getRaing(int count);
+    List<Film> getRating(int count);
 }

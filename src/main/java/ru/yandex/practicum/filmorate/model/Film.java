@@ -16,7 +16,7 @@ public class Film {
     @Size(max = 200)
     private String description;
     @NotNull
-    @Past // TODO: реализовать собственную аннотацию releaseDate
+    @Past
     private LocalDate releaseDate;
     @Positive
     private int duration;

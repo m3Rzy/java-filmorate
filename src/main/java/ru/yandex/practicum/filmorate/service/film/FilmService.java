@@ -75,6 +75,6 @@ public class FilmService {
     }
 
     public List<Film> getTopFilms(int count) {
-        return filmStorage.getRaing(count);
+        return filmStorage.getRating(count);
     }
 }

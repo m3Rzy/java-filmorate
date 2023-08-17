@@ -67,7 +67,6 @@ public class UserDbStorage implements UserStorage {
                 .usingGeneratedKeyColumns("user_id");
         user.setId(simpleJdbcInsert.executeAndReturnKey(toMap(user)).intValue());
         log.info("UserDbStorage, запрос на добавление пользователя в БД прошёл успешно");
-        // TODO: возможно, лучше сделать - return user;
     }
 
     @Override

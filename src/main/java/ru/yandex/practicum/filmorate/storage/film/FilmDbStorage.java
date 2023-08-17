@@ -98,7 +98,6 @@ public class FilmDbStorage implements FilmStorage {
         mpaDbStorage.addMpaToFilm(film);
         genreDbStorage.addGenreToFilm(film);
         genreDbStorage.addGenresForCurrentFilm(film);
-        // TODO: возможно return film потребуется
     }
 
     @Override
@@ -140,7 +139,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getRaing(int count) {
+    public List<Film> getRating(int count) {
         String query = "SELECT films.*, COUNT(l.film_id) as count FROM films\n" +
                 "LEFT JOIN likes l ON films.film_id=l.film_id\n" +
                 "GROUP BY films.film_id\n" +
