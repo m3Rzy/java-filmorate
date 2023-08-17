@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.util.ValidationException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -68,21 +67,14 @@ public class FilmService {
     }
 
     public void addLike(int filmId, int userId) {
-        filmStorage.findFilmById(filmId).getLikes().add(userId);
+        filmStorage.pressLike(filmId, userId);
     }
 
     public void removeLike(int filmId, int userId) {
-        if (filmStorage.findFilmById(filmId).getLikes().contains(userId)) {
-            filmStorage.findFilmById(filmId).getLikes().remove(userId);
-        } else {
-            throw new NotFoundException("Пользователь не ставил лайк этому фильму.");
-        }
+        filmStorage.removeLike(filmId, userId);
     }
 
     public List<Film> getTopFilms(int count) {
-        return filmStorage.findFilms().stream()
-                .sorted((a, b) -> b.getLikes().size() - a.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getRaing(count);
     }
 }

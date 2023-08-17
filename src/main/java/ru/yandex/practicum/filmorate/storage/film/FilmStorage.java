@@ -17,4 +17,12 @@ public interface FilmStorage {
     //    изменение существующего фильма
     Film updateFilmStorage(Film film);
 
+    // присовение лайка фильму
+    Film pressLike(int filmId, int userId);
+
+    // удаление лайка с фильма
+    Film removeLike(int filmId, int userId);
+
+    // список популярных фильмов
+    List<Film> getRaing(int count);
 }
