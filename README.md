@@ -1,5 +1,5 @@
 # java-filmorate
->[ER-диаграмма](https://github.com/m3Rzy/java-filmorate/blob/main/ER-диаграмма.png)
+>[ER-диаграмма](https://github.com/m3Rzy/java-filmorate/blob/add-database/ER-диаграмма.png)
 # Пример запросов для основных операций:
 ```sql
 -- создание таблицы `films`

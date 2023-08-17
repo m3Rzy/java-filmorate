@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -22,11 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserDbStorageTest {
-    private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
-    User user;
-    User otherUser;
-    User user2;
+    private User user;
+    private User otherUser;
+    private User user2;
 
     @BeforeEach
     void preparationEntities() {
@@ -98,7 +96,7 @@ public class UserDbStorageTest {
 
     @DisplayName("Наличие общих друзей.")
     @Test
-    void shouldGetCommonFriends() {
+    void shouldGetCommonFriends_isOkRequest() {
         addEntites();
         userDbStorage.addFriendStorage(user.getId(), user2.getId());
         userDbStorage.addFriendStorage(otherUser.getId(), user2.getId());

@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmDbStorageTest {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
-    Film film;
-    Film popularFilm;
-    User user;
+    private Film film;
+    private Film popularFilm;
+    private User user;
 
     @BeforeEach
     void preparationEntities() {
