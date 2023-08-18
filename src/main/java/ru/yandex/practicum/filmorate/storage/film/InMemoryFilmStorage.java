@@ -59,10 +59,10 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getRating(int count) {
+    public List<Film> getRating(int limit) {
         return findFilms().stream()
                 .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
-                .limit(count).collect(Collectors.toList());
+                .limit(limit).collect(Collectors.toList());
     }
 
     private int getIdFilm() {

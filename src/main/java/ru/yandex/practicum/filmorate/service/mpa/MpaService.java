@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.util.NotFoundException;
 
 import java.util.List;
 
@@ -22,6 +23,10 @@ public class MpaService {
     }
 
     public Mpa getMpaById(int ratingMpaId) {
-        return mpaDbStorage.findMpaById(ratingMpaId);
+        try {
+            return mpaDbStorage.findMpaById(ratingMpaId);
+        } catch (RuntimeException e) {
+            throw new NotFoundException("Рейтинг mpa не найден.");
+        }
     }
 }

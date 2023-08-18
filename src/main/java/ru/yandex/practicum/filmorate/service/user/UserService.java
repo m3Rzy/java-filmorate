@@ -23,12 +23,6 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    private void userValidationService(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-    }
-
     public User addUser(User user) {
         userValidationService(user);
         userStorage.addUserStorage(user);
@@ -37,22 +31,27 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        if (userStorage.findUserById(user.getId()) == null) {
+//        if (userStorage.findUserById(user.getId()) == null) {
+//            throw new NotFoundException("PUT - Пользователь с id " + user.getId() + " не существует.");
+//        }
+        try {
+            userValidationService(user);
+            userStorage.updateUserStorage(user);
+            log.info("Пользователь {} успешно изменён.", user);
+            return user;
+        } catch (RuntimeException e) {
             throw new NotFoundException("PUT - Пользователь с id " + user.getId() + " не существует.");
         }
-        userValidationService(user);
-        userStorage.updateUserStorage(user);
-        log.info("Пользователь {} успешно изменён.", user);
-        return user;
     }
 
     public User getUserById(int id) {
-        if (userStorage.findUserById(id) == null) {
-            throw new NotFoundException("GET - Пользователь с id " + id + " не был найден.");
+        try {
+            userStorage.findUserById(id);
+            log.info("Пользователь {} был успешно найден с помощью id.", userStorage.findUserById(id));
+            return userStorage.findUserById(id);
+        } catch (RuntimeException e) {
+            throw new NotFoundException("Такой пользователь не найден.");
         }
-        userStorage.findUserById(id);
-        log.info("Пользователь {} был успешно найден с помощью id.", userStorage.findUserById(id));
-        return userStorage.findUserById(id);
     }
 
     public List<User> getUsers() {
@@ -83,5 +82,11 @@ public class UserService {
     public List<User> getCommonFriends(int userId, int otherId) {
         log.info("Количество общих друзей: " + userStorage.findCommonFriendsStorage(userId, otherId));
         return userStorage.findCommonFriendsStorage(userId, otherId);
+    }
+
+    private void userValidationService(User user) throws ValidationException {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }

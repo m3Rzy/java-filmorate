@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.util.NotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,22 +33,11 @@ public class MpaDbStorage implements MpaStorage {
         return mpas;
     }
 
-    public Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
-        return Mpa.builder()
-                .id(resultSet.getInt("rating_mpa_id"))
-                .name(resultSet.getString("name"))
-                .build();
-    }
-
     @Override
     public Mpa findMpaById(int mpaId) {
         String query = "SELECT rating_mpa_id, name FROM mpa_type " +
                 "WHERE rating_mpa_id=?";
-        try {
-            return jdbcTemplate.queryForObject(query, this::mapRowToMpa, mpaId);
-        } catch (RuntimeException e) {
-            throw new NotFoundException("Рейтинг mpa не найден.");
-        }
+        return jdbcTemplate.queryForObject(query, this::mapRowToMpa, mpaId);
     }
 
     @Override
@@ -59,5 +47,12 @@ public class MpaDbStorage implements MpaStorage {
                 film.setMpa(mpa);
             }
         });
+    }
+
+    private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
+        return Mpa.builder()
+                .id(resultSet.getInt("rating_mpa_id"))
+                .name(resultSet.getString("name"))
+                .build();
     }
 }

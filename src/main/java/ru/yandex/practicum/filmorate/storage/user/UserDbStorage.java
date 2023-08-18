@@ -45,18 +45,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User findUserById(int id) {
         String query = "SELECT user_id, email, login, name, birthday FROM users WHERE user_id=?";
-        try {
-            log.info("UserDbStorage, запрос на поиск пользователя по id прошёл успешно.");
-            return jdbcTemplate.queryForObject(query, this::mapRowToUser, id);
-        } catch (RuntimeException e) {
-            throw new NotFoundException("Такой пользователь не найден.");
-        }
-    }
-
-    public void userDbValidation(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+        return jdbcTemplate.queryForObject(query, this::mapRowToUser, id);
     }
 
     @Override
@@ -93,11 +82,6 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User addFriendStorage(Integer userId, Integer friendId) {
         User user = findUserById(userId);
-        try {
-            findUserById(friendId);
-        } catch (RuntimeException e) {
-            throw new NotFoundException("Данный пользователь не найден.");
-        }
         String query = "INSERT INTO friends (user_id, friend_id) VALUES(?, ?)";
         jdbcTemplate.update(query, userId, friendId);
         return user;
@@ -117,6 +101,12 @@ public class UserDbStorage implements UserStorage {
                 "SELECT friend_id FROM friends WHERE user_id = ?) " +
                 "AND user_id IN(SELECT friend_id FROM friends WHERE user_id = ?)";
         return new ArrayList<>(jdbcTemplate.query(query, this::mapRowToUser, id, friendId));
+    }
+
+    private void userDbValidation(User user) throws ValidationException {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
