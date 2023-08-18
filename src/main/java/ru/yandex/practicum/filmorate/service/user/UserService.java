@@ -31,9 +31,6 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-//        if (userStorage.findUserById(user.getId()) == null) {
-//            throw new NotFoundException("PUT - Пользователь с id " + user.getId() + " не существует.");
-//        }
         try {
             userValidationService(user);
             userStorage.updateUserStorage(user);
