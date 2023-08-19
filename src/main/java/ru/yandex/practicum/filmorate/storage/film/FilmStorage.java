@@ -6,19 +6,19 @@ import java.util.List;
 
 public interface FilmStorage {
     //    список всех фильмов
-    List<Film> findFilms();
+    List<Film> findAll();
 
     //    получение фильма по id
-    Film findFilmById(int id);
+    Film findById(int id);
 
     //    добавление нового фильма
-    void addFilmStorage(Film film);
+    void add(Film film);
 
     //    изменение существующего фильма
-    Film updateFilmStorage(Film film);
+    Film update(Film film);
 
     // присовение лайка фильму
-    Film pressLike(int filmId, int userId);
+    Film like(int filmId, int userId);
 
     // удаление лайка с фильма
     Film removeLike(int filmId, int userId);

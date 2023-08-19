@@ -18,7 +18,7 @@ public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Genre> findGenres() {
+    public List<Genre> findAll() {
         List<Genre> genres = new ArrayList<>();
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT genre_id," + "name FROM genre_type");
         while (genreRows.next()) {
@@ -29,13 +29,13 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Set<Genre> findGenresForCurrentFilm(int filmId) {
+    public Set<Genre> findForFilm(int filmId) {
         Set<Genre> genreSet = new LinkedHashSet<>();
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT id, film_id, " +
                 "genre_id FROM genre ORDER BY genre_id ASC");
         while (genreRows.next()) {
             if (genreRows.getLong("film_id") == filmId) {
-                genreSet.add(findGenreById(genreRows.getInt("genre_id")));
+                genreSet.add(findById(genreRows.getInt("genre_id")));
             }
         }
         return genreSet;
@@ -45,11 +45,11 @@ public class GenreDbStorage implements GenreStorage {
         if (Objects.isNull(film.getGenres())) {
             return;
         }
-        film.getGenres().forEach(genre -> genre.setName(findGenreById(genre.getId()).getName()));
+        film.getGenres().forEach(genre -> genre.setName(findById(genre.getId()).getName()));
     }
 
     @Override
-    public void addGenresForCurrentFilm(Film film) {
+    public void addForFilm(Film film) {
         if (Objects.isNull(film.getGenres())) {
             return;
         }
@@ -62,14 +62,14 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public void updateGenresForCurrentFilm(Film film) {
+    public void update(Film film) {
         String query = "DELETE FROM genre WHERE film_id = ?";
         jdbcTemplate.update(query, film.getId());
-        addGenresForCurrentFilm(film);
+        addForFilm(film);
     }
 
     @Override
-    public Genre findGenreById(int genreId) {
+    public Genre findById(int genreId) {
         String query = "SELECT genre_id, name FROM genre_type WHERE genre_id=?";
         return jdbcTemplate.queryForObject(query, this::mapRowToGenre, genreId);
     }

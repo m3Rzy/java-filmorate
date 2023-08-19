@@ -20,7 +20,7 @@ public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Mpa> findMpas() {
+    public List<Mpa> findAll() {
         List<Mpa> mpas = new ArrayList<>();
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT rating_mpa_id, name FROM mpa_type");
         while (mpaRows.next()) {
@@ -34,15 +34,15 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-    public Mpa findMpaById(int mpaId) {
+    public Mpa findById(int mpaId) {
         String query = "SELECT rating_mpa_id, name FROM mpa_type " +
                 "WHERE rating_mpa_id=?";
         return jdbcTemplate.queryForObject(query, this::mapRowToMpa, mpaId);
     }
 
     @Override
-    public void addMpaToFilm(Film film) {
-        findMpas().forEach(mpa -> {
+    public void add(Film film) {
+        findAll().forEach(mpa -> {
             if (Objects.equals(film.getMpa().getId(), mpa.getId())) {
                 film.setMpa(mpa);
             }

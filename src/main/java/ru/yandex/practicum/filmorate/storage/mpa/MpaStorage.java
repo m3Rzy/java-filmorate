@@ -6,9 +6,9 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.util.List;
 
 public interface MpaStorage {
-    List<Mpa> findMpas();
+    List<Mpa> findAll();
 
-    Mpa findMpaById(int mpaId);
+    Mpa findById(int mpaId);
 
-    void addMpaToFilm(Film film);
+    void add(Film film);
 }

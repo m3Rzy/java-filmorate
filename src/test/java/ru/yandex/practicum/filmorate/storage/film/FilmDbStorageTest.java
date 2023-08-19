@@ -69,37 +69,37 @@ public class FilmDbStorageTest {
     }
 
     void addEntities() {
-        filmDbStorage.addFilmStorage(film);
-        filmDbStorage.addFilmStorage(popularFilm);
+        filmDbStorage.add(film);
+        filmDbStorage.add(popularFilm);
         userDbStorage.addUserStorage(user);
     }
 
     @DisplayName("Добавление нового фильма.")
     @Test
     void shouldAddNewFilm_isOkRequest() {
-        filmDbStorage.addFilmStorage(film);
-        assertEquals(film, filmDbStorage.findFilmById(film.getId()));
+        filmDbStorage.add(film);
+        assertEquals(film, filmDbStorage.findById(film.getId()));
     }
 
     @DisplayName("Добавление лайка на фильм.")
     @Test
     void shouldPressLike_isOkRequest() {
         addEntities();
-        filmDbStorage.pressLike(1, 1);
-        assertEquals(filmDbStorage.findFilmById(1).getLikes().size(), 1);
-        assertFalse(filmDbStorage.findFilmById(1).getLikes().isEmpty());
-        assertTrue(filmDbStorage.findFilmById(1).getLikes().contains(1));
+        filmDbStorage.like(1, 1);
+        assertEquals(filmDbStorage.findById(1).getLikes().size(), 1);
+        assertFalse(filmDbStorage.findById(1).getLikes().isEmpty());
+        assertTrue(filmDbStorage.findById(1).getLikes().contains(1));
     }
 
     @DisplayName("Удаление лайка с фильма.")
     @Test
     void shouldRemoveLike_isOkRequest() {
         addEntities();
-        filmDbStorage.pressLike(1, 1);
+        filmDbStorage.like(1, 1);
         filmDbStorage.removeLike(1, 1);
-        assertEquals(filmDbStorage.findFilmById(1).getLikes().size(), 0);
-        assertFalse(filmDbStorage.findFilmById(1).getLikes().contains(1));
-        assertTrue(filmDbStorage.findFilmById(1).getLikes().isEmpty());
+        assertEquals(filmDbStorage.findById(1).getLikes().size(), 0);
+        assertFalse(filmDbStorage.findById(1).getLikes().contains(1));
+        assertTrue(filmDbStorage.findById(1).getLikes().isEmpty());
     }
 
     @DisplayName("Изменение фильма.")
@@ -108,19 +108,19 @@ public class FilmDbStorageTest {
         addEntities();
         String title = "Пустое название фильма.";
         film.setName(title);
-        filmDbStorage.updateFilmStorage(film);
-        assertEquals(title, filmDbStorage.findFilmById(1).getName());
+        filmDbStorage.update(film);
+        assertEquals(title, filmDbStorage.findById(1).getName());
         film.setDuration(555);
-        filmDbStorage.updateFilmStorage(film);
-        assertEquals(555, filmDbStorage.findFilmById(1).getDuration());
+        filmDbStorage.update(film);
+        assertEquals(555, filmDbStorage.findById(1).getDuration());
     }
 
     @DisplayName("Список популярных фильмов.")
     @Test
     void shouldGetPopularFilms_isOkRequest() {
         addEntities();
-        filmDbStorage.pressLike(2, 1);
-        filmDbStorage.updateFilmStorage(popularFilm);
+        filmDbStorage.like(2, 1);
+        filmDbStorage.update(popularFilm);
         assertEquals(2, filmDbStorage.getRating(2).get(0).getId());
     }
 }

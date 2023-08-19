@@ -19,12 +19,12 @@ public class MpaService {
     }
 
     public List<Mpa> getMpas() {
-        return mpaDbStorage.findMpas();
+        return mpaDbStorage.findAll();
     }
 
     public Mpa getMpaById(int ratingMpaId) {
         try {
-            return mpaDbStorage.findMpaById(ratingMpaId);
+            return mpaDbStorage.findById(ratingMpaId);
         } catch (RuntimeException e) {
             throw new NotFoundException("Рейтинг mpa не найден.");
         }

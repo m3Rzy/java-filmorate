@@ -19,48 +19,48 @@ public class InMemoryFilmStorage implements FilmStorage {
     private int id = 0;
 
     @Override
-    public List<Film> findFilms() {
+    public List<Film> findAll() {
         return new ArrayList<>(films.values());
     }
 
     @Override
-    public Film findFilmById(int id) {
+    public Film findById(int id) {
         return films.get(id);
     }
 
     @Override
-    public void addFilmStorage(Film film) {
+    public void add(Film film) {
         film.setLikes(new HashSet<>());
         film.setId(getIdFilm());
         films.put(film.getId(), film);
     }
 
     @Override
-    public Film updateFilmStorage(Film film) {
+    public Film update(Film film) {
         film.setLikes(new HashSet<>());
         films.put(film.getId(), film);
         return film;
     }
 
     @Override
-    public Film pressLike(int filmId, int userId) {
-        findFilmById(filmId).getLikes().add(userId);
-        return findFilmById(filmId);
+    public Film like(int filmId, int userId) {
+        findById(filmId).getLikes().add(userId);
+        return findById(filmId);
     }
 
     @Override
     public Film removeLike(int filmId, int userId) {
-        if (findFilmById(filmId).getLikes().contains(userId)) {
-            findFilmById(filmId).getLikes().remove(userId);
+        if (findById(filmId).getLikes().contains(userId)) {
+            findById(filmId).getLikes().remove(userId);
         } else {
             throw new NotFoundException("Данный пользователь не ставил лайк этому фильму.");
         }
-        return findFilmById(filmId);
+        return findById(filmId);
     }
 
     @Override
     public List<Film> getRating(int limit) {
-        return findFilms().stream()
+        return findAll().stream()
                 .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
                 .limit(limit).collect(Collectors.toList());
     }

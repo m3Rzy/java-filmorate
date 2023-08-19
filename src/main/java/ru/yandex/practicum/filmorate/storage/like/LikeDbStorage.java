@@ -15,7 +15,7 @@ public class LikeDbStorage implements LikeStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Set<Integer> findLikesForCurrentFilm(int filmId) {
+    public Set<Integer> findAll(int filmId) {
         Set<Integer> likes = new HashSet<>();
         SqlRowSet likeRows = jdbcTemplate.queryForRowSet("SELECT like_id," +
                 " film_id, user_id FROM likes");

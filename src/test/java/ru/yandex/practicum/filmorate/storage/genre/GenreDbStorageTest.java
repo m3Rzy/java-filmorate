@@ -50,16 +50,16 @@ public class GenreDbStorageTest {
     @DisplayName("Список всех жанров.")
     @Test
     void shouldGetAllGenres_isOkRequest() {
-        assertEquals(6, genreDbStorage.findGenres().size());
-        assertEquals("Комедия", genreDbStorage.findGenres().get(0).getName());
-        assertEquals("Боевик", genreDbStorage.findGenres().get(5).getName());
+        assertEquals(6, genreDbStorage.findAll().size());
+        assertEquals("Комедия", genreDbStorage.findAll().get(0).getName());
+        assertEquals("Боевик", genreDbStorage.findAll().get(5).getName());
     }
 
     @DisplayName("Получение жанра по id.")
     @Test
     void shouldGetGenreById_isOkRequest() {
-        assertEquals(1, genreDbStorage.findGenreById(1).getId());
-        assertEquals("Комедия", genreDbStorage.findGenreById(1).getName());
+        assertEquals(1, genreDbStorage.findById(1).getId());
+        assertEquals("Комедия", genreDbStorage.findById(1).getName());
     }
 
     @DisplayName("Добавление/изменение жанра/жанров к фильму.")
@@ -74,9 +74,9 @@ public class GenreDbStorageTest {
                 .name("Комедия")
                 .build());
         film.setGenres(genres);
-        filmDbStorage.addFilmStorage(film);
-        assertEquals(2, genreDbStorage.findGenresForCurrentFilm(1).size());
-        assertEquals(genres, genreDbStorage.findGenresForCurrentFilm(1));
-        assertTrue(genreDbStorage.findGenresForCurrentFilm(1).contains(genreDbStorage.findGenres().get(0)));
+        filmDbStorage.add(film);
+        assertEquals(2, genreDbStorage.findForFilm(1).size());
+        assertEquals(genres, genreDbStorage.findForFilm(1));
+        assertTrue(genreDbStorage.findForFilm(1).contains(genreDbStorage.findAll().get(0)));
     }
 }

@@ -41,7 +41,7 @@ public class FilmService {
 
     public Film addFilm(Film film) {
         filmValidation(film);
-        filmStorage.addFilmStorage(film);
+        filmStorage.add(film);
         log.info("Фильм {} успешно создан.", film);
         return film;
     }
@@ -49,7 +49,7 @@ public class FilmService {
     public Film updateFilm(Film film) {
         try {
             filmValidation(film);
-            filmStorage.updateFilmStorage(film);
+            filmStorage.update(film);
             log.info("Фильм {} успешно изменён.", film);
             return film;
         } catch (RuntimeException e) {
@@ -59,21 +59,21 @@ public class FilmService {
 
     public Film getFilmById(int id) {
         try {
-            filmStorage.findFilmById(id);
-            log.info("Фильм {} был успешно найден с помощью id.", filmStorage.findFilmById(id));
-            return filmStorage.findFilmById(id);
+            filmStorage.findById(id);
+            log.info("Фильм {} был успешно найден с помощью id.", filmStorage.findById(id));
+            return filmStorage.findById(id);
         } catch (RuntimeException e) {
             throw new NotFoundException("Такой фильм не найден.");
         }
     }
 
     public List<Film> getFilms() {
-        log.info("Количество фильмов в списке: " + filmStorage.findFilms().size());
-        return filmStorage.findFilms();
+        log.info("Количество фильмов в списке: " + filmStorage.findAll().size());
+        return filmStorage.findAll();
     }
 
     public void addLike(int filmId, int userId) {
-        filmStorage.pressLike(filmId, userId);
+        filmStorage.like(filmId, userId);
     }
 
     public void removeLike(int filmId, int userId) {

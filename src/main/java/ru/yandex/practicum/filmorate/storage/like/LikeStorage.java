@@ -4,5 +4,5 @@ import java.util.Set;
 
 public interface LikeStorage {
 
-    Set<Integer> findLikesForCurrentFilm(int filmId);
+    Set<Integer> findAll(int filmId);
 }

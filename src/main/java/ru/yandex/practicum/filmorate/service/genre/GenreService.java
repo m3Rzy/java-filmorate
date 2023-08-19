@@ -23,13 +23,13 @@ public class GenreService {
 
     public Genre getGenre(int genreId) {
         try {
-            return genreDbStorage.findGenreById(genreId);
+            return genreDbStorage.findById(genreId);
         } catch (RuntimeException e) {
             throw new NotFoundException("Жанр не найден.");
         }
     }
 
     public List<Genre> getGenres() {
-        return genreDbStorage.findGenres();
+        return genreDbStorage.findAll();
     }
 }
