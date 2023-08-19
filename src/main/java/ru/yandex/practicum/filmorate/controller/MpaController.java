@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.mpa.MpaService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -25,7 +26,7 @@ public class MpaController {
     }
 
     @GetMapping("/{id}")
-    public Mpa getMpaRating(@PathVariable("id") int mpaId) {
+    public Optional<Mpa> getMpaRating(@PathVariable("id") int mpaId) {
         return mpaService.getMpaById(mpaId);
     }
 }

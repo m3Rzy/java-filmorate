@@ -26,18 +26,18 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable Integer id) {
+    public Optional<Film> getFilmById(@PathVariable Integer id) {
         return filmService.getFilmById(id);
     }
 
     @PostMapping
     public Optional<Film> addFilm(@Valid @RequestBody Film film) {
         filmValidation(film);
-        return Optional.ofNullable(filmService.addFilm(film));
+        return filmService.addFilm(film);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
+    public Optional<Film> updateFilm(@Valid @RequestBody Film film) {
         filmValidation(film);
         return filmService.updateFilm(film);
     }

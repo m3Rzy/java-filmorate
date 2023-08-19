@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,26 +24,26 @@ public class FilmService {
         this.userService = userService;
     }
 
-    public Film addFilm(Film film) {
+    public Optional<Film> addFilm(Film film) {
         filmStorage.add(film);
         log.info("Фильм {} успешно создан.", film);
-        return film;
+        return Optional.ofNullable(film);
     }
 
-    public Film updateFilm(Film film) {
+    public Optional<Film> updateFilm(Film film) {
         if (isExist(film.getId())) {
             filmStorage.update(film);
             log.info("Фильм {} успешно изменён.", film);
-            return film;
+            return Optional.of(film);
         } else {
             throw new NotFoundException("FilmService.update | " + film + " не был найден.");
         }
     }
 
-    public Film getFilmById(int id) {
+    public Optional<Film> getFilmById(int id) {
         if (isExist(id)) {
             log.info("Фильм {} был успешно найден с помощью id.", id);
-            return filmStorage.findById(id);
+            return Optional.ofNullable(filmStorage.findById(id));
         } else {
             throw new NotFoundException("FilmService.getFilmById | Фильм с идентификатором " + id + " не был найден.");
         }

@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.util.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -22,9 +23,9 @@ public class MpaService {
         return mpaDbStorage.findAll();
     }
 
-    public Mpa getMpaById(int ratingMpaId) {
+    public Optional<Mpa> getMpaById(int ratingMpaId) {
         try {
-            return mpaDbStorage.findById(ratingMpaId).get();
+            return mpaDbStorage.findById(ratingMpaId);
         } catch (RuntimeException e) {
             throw new NotFoundException("Рейтинг mpa не найден.");
         }

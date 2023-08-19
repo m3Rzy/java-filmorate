@@ -25,20 +25,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
+    public Optional<User> getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
 
     @PostMapping
     public Optional<User> addUser(@Valid @RequestBody User user) {
-        userValidationService(user);
-        return Optional.ofNullable(userService.addUser(user));
+        userValidation(user);
+        return userService.addUser(user);
     }
 
     @PutMapping
     public Optional<User> updateUser(@Valid @RequestBody User user) {
-        userValidationService(user);
-        return Optional.ofNullable(userService.updateUser(user));
+        userValidation(user);
+        return userService.updateUser(user);
     }
 
     @GetMapping("/{id}/friends")
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public Optional<User> addFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
         return userService.addFriend(id, friendId);
     }
 
@@ -61,7 +61,7 @@ public class UserController {
         userService.removeFriend(id, friendId);
     }
 
-    private void userValidationService(User user) throws ValidationException {
+    private void userValidation(User user) throws ValidationException {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }

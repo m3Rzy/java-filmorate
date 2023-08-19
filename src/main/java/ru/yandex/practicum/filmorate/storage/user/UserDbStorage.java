@@ -50,7 +50,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void add(User user) {
-        userDbValidation(user);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
@@ -60,7 +59,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> update(User user) {
-        userDbValidation(user);
         String query = "UPDATE users SET " +
                 "email=?, login=?, name=?, birthday=? WHERE user_id=?";
         int rowsCount = jdbcTemplate.update(query, user.getEmail(),
@@ -81,18 +79,16 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> addFriend(Integer userId, Integer friendId) {
-        User user = findById(userId).get();
         String query = "INSERT INTO friends (user_id, friend_id) VALUES(?, ?)";
         jdbcTemplate.update(query, userId, friendId);
-        return Optional.ofNullable(user);
+        return findById(userId);
     }
 
     @Override
     public Optional<User> removeFriend(Integer userId, Integer friendId) {
-        User user = findById(userId).get();
         String query = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
         jdbcTemplate.update(query, userId, friendId);
-        return Optional.ofNullable(user);
+        return findById(userId);
     }
 
     @Override
@@ -101,12 +97,6 @@ public class UserDbStorage implements UserStorage {
                 "SELECT friend_id FROM friends WHERE user_id = ?) " +
                 "AND user_id IN(SELECT friend_id FROM friends WHERE user_id = ?)";
         return new ArrayList<>(jdbcTemplate.query(query, this::mapRowToUser, id, friendId));
-    }
-
-    private void userDbValidation(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
