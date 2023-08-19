@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
@@ -30,25 +29,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-        List<Film> films = new ArrayList<>();
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT film_id, " +
-                "name, description, release_date," +
-                " duration, rating_mpa_id FROM films");
-        while (filmRows.next()) {
-            Film film = Film.builder()
-                    .id(filmRows.getInt("film_id"))
-                    .name(filmRows.getString("name"))
-                    .description(filmRows.getString("description"))
-                    .releaseDate(Objects.requireNonNull(filmRows
-                            .getDate("release_date")).toLocalDate())
-                    .duration(filmRows.getInt("duration"))
-                    .mpa(mpaDbStorage.findById(filmRows.getInt("rating_mpa_id")).get())
-                    .build();
-            film.setGenres(genreDbStorage.findForFilm(film.getId()));
-            film.setLikes(likeDbStorage.findAll(film.getId()));
-            films.add(film);
-        }
-        return films;
+        /* посмотрел через Postman, вроде бы, 1-им запросом я получаю данные в этом случае */
+        String query = "SELECT * FROM films";
+        return jdbcTemplate.query(query, this::mapRowToFilm);
     }
 
     @Override
