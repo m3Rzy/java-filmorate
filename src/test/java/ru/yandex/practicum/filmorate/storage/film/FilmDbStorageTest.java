@@ -78,7 +78,7 @@ public class FilmDbStorageTest {
     @Test
     void shouldAddNewFilm_isOkRequest() {
         filmDbStorage.add(film);
-        assertEquals(film, filmDbStorage.findById(film.getId()).get());
+        assertEquals(film, filmDbStorage.findById(film.getId()));
     }
 
     @DisplayName("Добавление лайка на фильм.")
@@ -86,9 +86,9 @@ public class FilmDbStorageTest {
     void shouldPressLike_isOkRequest() {
         addEntities();
         filmDbStorage.like(1, 1);
-        assertEquals(filmDbStorage.findById(1).get().getLikes().size(), 1);
-        assertFalse(filmDbStorage.findById(1).get().getLikes().isEmpty());
-        assertTrue(filmDbStorage.findById(1).get().getLikes().contains(1));
+        assertEquals(filmDbStorage.findById(1).getLikes().size(), 1);
+        assertFalse(filmDbStorage.findById(1).getLikes().isEmpty());
+        assertTrue(filmDbStorage.findById(1).getLikes().contains(1));
     }
 
     @DisplayName("Удаление лайка с фильма.")
@@ -97,9 +97,9 @@ public class FilmDbStorageTest {
         addEntities();
         filmDbStorage.like(1, 1);
         filmDbStorage.removeLike(1, 1);
-        assertEquals(filmDbStorage.findById(1).get().getLikes().size(), 0);
-        assertFalse(filmDbStorage.findById(1).get().getLikes().contains(1));
-        assertTrue(filmDbStorage.findById(1).get().getLikes().isEmpty());
+        assertEquals(filmDbStorage.findById(1).getLikes().size(), 0);
+        assertFalse(filmDbStorage.findById(1).getLikes().contains(1));
+        assertTrue(filmDbStorage.findById(1).getLikes().isEmpty());
     }
 
     @DisplayName("Изменение фильма.")
@@ -109,10 +109,10 @@ public class FilmDbStorageTest {
         String title = "Пустое название фильма.";
         film.setName(title);
         filmDbStorage.update(film);
-        assertEquals(title, filmDbStorage.findById(1).get().getName());
+        assertEquals(title, filmDbStorage.findById(1).getName());
         film.setDuration(555);
         filmDbStorage.update(film);
-        assertEquals(555, filmDbStorage.findById(1).get().getDuration());
+        assertEquals(555, filmDbStorage.findById(1).getDuration());
     }
 
     @DisplayName("Список популярных фильмов.")

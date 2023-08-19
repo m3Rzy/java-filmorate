@@ -82,7 +82,7 @@ public class UserDbStorageTest {
         userDbStorage.addFriend(user.getId(), otherUser.getId());
         assertFalse(userDbStorage.findById(1).get().getFriends().isEmpty());
         assertTrue(userDbStorage.findById(1).get().getFriends().contains(2));
-        assertEquals("theft", userDbStorage.findFriends(1).get(0).getName());
+        assertEquals("theft", userDbStorage.findFriends(1).get(0).getLogin());
     }
 
     @DisplayName("Удаление пользователя из списка друзей.")
