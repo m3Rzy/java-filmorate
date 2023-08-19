@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.util.ValidationException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,11 +31,13 @@ public class UserController {
 
     @PostMapping
     public Optional<User> addUser(@Valid @RequestBody User user) {
+        userValidationService(user);
         return Optional.ofNullable(userService.addUser(user));
     }
 
     @PutMapping
     public Optional<User> updateUser(@Valid @RequestBody User user) {
+        userValidationService(user);
         return Optional.ofNullable(userService.updateUser(user));
     }
 
@@ -56,5 +59,11 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         userService.removeFriend(id, friendId);
+    }
+
+    private void userValidationService(User user) throws ValidationException {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }

@@ -30,11 +30,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-
-        /* Я понял, что можно написать 2 запроса с JOIN'ми, но не понимаю как их объединить здесь,
-        так как ещё ведь их надо сопоставить между собой. Более-менее решение я нашёл с помощью Hibernate,
-        но здесь его использование задание не подразумевает. */
-
         List<Film> films = new ArrayList<>();
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT film_id, " +
                 "name, description, release_date," +
@@ -57,10 +52,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> findById(int id) {
+    public Film findById(int id) {
         String query = "SELECT film_id, name, description, release_date, duration, rating_mpa_id " +
                 "FROM films WHERE film_id=?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(query, this::mapRowToFilm, id));
+        return jdbcTemplate.queryForObject(query, this::mapRowToFilm, id);
     }
 
     @Override
@@ -95,7 +90,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Optional<Film> like(int filmId, int userId) {
-        Film film = findById(filmId).get();
+        Film film = findById(filmId);
         String query = "INSERT INTO likes (film_id, user_id) VALUES(?, ?)";
         jdbcTemplate.update(query, filmId, userId);
         return Optional.of(film);
@@ -103,7 +98,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Optional<Film> removeLike(int filmId, int userId) {
-        Film film = findById(filmId).get();
+        Film film = findById(filmId);
         String query = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
         jdbcTemplate.update(query, filmId, userId);
         return Optional.of(film);

@@ -24,7 +24,6 @@ public class UserService {
     }
 
     public User addUser(User user) {
-        userValidationService(user);
         userStorage.add(user);
         log.info("Пользователь {} успешно создан.", user);
         return user;
@@ -32,7 +31,6 @@ public class UserService {
 
     public User updateUser(User user) {
         try {
-            userValidationService(user);
             userStorage.update(user);
             log.info("Пользователь {} успешно изменён.", user);
             return user;
@@ -79,11 +77,5 @@ public class UserService {
     public List<User> getCommonFriends(int userId, int otherId) {
         log.info("Количество общих друзей: " + userStorage.findCommonFriends(userId, otherId));
         return userStorage.findCommonFriends(userId, otherId);
-    }
-
-    private void userValidationService(User user) throws ValidationException {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
     }
 }

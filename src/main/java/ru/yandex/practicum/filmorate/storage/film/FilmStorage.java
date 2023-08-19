@@ -10,7 +10,7 @@ public interface FilmStorage {
     List<Film> findAll();
 
     //    получение фильма по id
-    Optional<Film> findById(int id);
+    Film findById(int id);
 
     //    добавление нового фильма
     void add(Film film);
