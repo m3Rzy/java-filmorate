@@ -8,7 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.util.NotFoundException;
-import ru.yandex.practicum.filmorate.util.ValidationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,22 +30,23 @@ public class UserService {
     }
 
     public Optional<User> updateUser(User user) {
-        try {
+        if (isExist(user.getId())) {
             userStorage.update(user);
             log.info("Пользователь {} успешно изменён.", user);
-            return Optional.ofNullable(user);
-        } catch (RuntimeException e) {
-            throw new NotFoundException("PUT - Пользователь с id " + user.getId() + " не существует.");
+            return Optional.of(user);
+        } else {
+            throw new NotFoundException("UserService.updateUser | Пользователь " + user + " не был найден.");
         }
     }
 
     public Optional<User> getUserById(int id) {
-        try {
+        if (isExist(id)) {
             userStorage.findById(id);
             log.info("Пользователь {} был успешно найден с помощью id.", userStorage.findById(id));
             return userStorage.findById(id);
-        } catch (RuntimeException e) {
-            throw new NotFoundException("Такой пользователь не найден.");
+        } else {
+            throw new NotFoundException("UserService.getUserById | Пользователь с идентификатором " + id
+                    + " не был найден.");
         }
     }
 
@@ -78,5 +78,14 @@ public class UserService {
     public List<User> getCommonFriends(int userId, int otherId) {
         log.info("Количество общих друзей: " + userStorage.findCommonFriends(userId, otherId));
         return userStorage.findCommonFriends(userId, otherId);
+    }
+
+    private boolean isExist(int id) {
+        for (User user : userStorage.findAll()) {
+            if (id == user.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
