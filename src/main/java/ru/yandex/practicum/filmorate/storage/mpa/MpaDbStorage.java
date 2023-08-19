@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -34,10 +35,10 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-    public Mpa findById(int mpaId) {
+    public Optional<Mpa> findById(int mpaId) {
         String query = "SELECT rating_mpa_id, name FROM mpa_type " +
                 "WHERE rating_mpa_id=?";
-        return jdbcTemplate.queryForObject(query, this::mapRowToMpa, mpaId);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(query, this::mapRowToMpa, mpaId));
     }
 
     @Override

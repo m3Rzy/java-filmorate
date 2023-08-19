@@ -25,7 +25,7 @@ public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<User> findUsers() {
+    public List<User> findAll() {
         List<User> users = new ArrayList<>();
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("SELECT * FROM users");
         while (rowSet.next()) {
@@ -43,13 +43,13 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(int id) {
+    public Optional<User> findById(int id) {
         String query = "SELECT user_id, email, login, name, birthday FROM users WHERE user_id=?";
-        return jdbcTemplate.queryForObject(query, this::mapRowToUser, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(query, this::mapRowToUser, id));
     }
 
     @Override
-    public void addUserStorage(User user) {
+    public void add(User user) {
         userDbValidation(user);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
@@ -59,7 +59,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User updateUserStorage(User user) {
+    public Optional<User> update(User user) {
         userDbValidation(user);
         String query = "UPDATE users SET " +
                 "email=?, login=?, name=?, birthday=? WHERE user_id=?";
@@ -67,36 +67,36 @@ public class UserDbStorage implements UserStorage {
                 user.getLogin(), user.getName(), user.getBirthday(), user.getId());
         if (rowsCount > 0) {
             log.info("UserDbStorage, запрос на изменение пользователя прошёл успешно.");
-            return user;
+            return Optional.of(user);
         }
         throw new NotFoundException("Данный пользовать не найден.");
     }
 
     @Override
-    public List<User> findFriendsByUserIdStorage(Integer id) {
+    public List<User> findFriends(Integer id) {
         String query = "SELECT user_id, email, login, name, birthday FROM users WHERE" +
                 " user_id IN (SELECT friend_id FROM friends WHERE user_id=?)";
         return new ArrayList<>(jdbcTemplate.query(query, this::mapRowToUser, id));
     }
 
     @Override
-    public User addFriendStorage(Integer userId, Integer friendId) {
-        User user = findUserById(userId);
+    public Optional<User> addFriend(Integer userId, Integer friendId) {
+        User user = findById(userId).get();
         String query = "INSERT INTO friends (user_id, friend_id) VALUES(?, ?)";
         jdbcTemplate.update(query, userId, friendId);
-        return user;
+        return Optional.ofNullable(user);
     }
 
     @Override
-    public User removeFriendStorage(Integer userId, Integer friendId) {
-        User user = findUserById(userId);
+    public Optional<User> removeFriend(Integer userId, Integer friendId) {
+        User user = findById(userId).get();
         String query = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
         jdbcTemplate.update(query, userId, friendId);
-        return user;
+        return Optional.ofNullable(user);
     }
 
     @Override
-    public List<User> findCommonFriendsStorage(Integer id, Integer friendId) {
+    public List<User> findCommonFriends(Integer id, Integer friendId) {
         String query = "SELECT user_id, email, login, name, birthday FROM users WHERE user_id IN(" +
                 "SELECT friend_id FROM friends WHERE user_id = ?) " +
                 "AND user_id IN(SELECT friend_id FROM friends WHERE user_id = ?)";
@@ -117,7 +117,7 @@ public class UserDbStorage implements UserStorage {
                 .name(resultSet.getString("name"))
                 .birthday(resultSet.getDate("birthday").toLocalDate())
                 .build();
-        user.setFriends(findFriendsByUserIdStorage(user.getId()).stream()
+        user.setFriends(findFriends(user.getId()).stream()
                 .map(User::getId).collect(Collectors.toSet()));
         return user;
     }

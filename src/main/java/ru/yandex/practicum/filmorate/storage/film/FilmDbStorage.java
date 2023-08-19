@@ -30,6 +30,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
+
         /* Я понял, что можно написать 2 запроса с JOIN'ми, но не понимаю как их объединить здесь,
         так как ещё ведь их надо сопоставить между собой. Более-менее решение я нашёл с помощью Hibernate,
         но здесь его использование задание не подразумевает. */
@@ -46,7 +47,7 @@ public class FilmDbStorage implements FilmStorage {
                     .releaseDate(Objects.requireNonNull(filmRows
                             .getDate("release_date")).toLocalDate())
                     .duration(filmRows.getInt("duration"))
-                    .mpa(mpaDbStorage.findById(filmRows.getInt("rating_mpa_id")))
+                    .mpa(mpaDbStorage.findById(filmRows.getInt("rating_mpa_id")).get())
                     .build();
             film.setGenres(genreDbStorage.findForFilm(film.getId()));
             film.setLikes(likeDbStorage.findAll(film.getId()));
@@ -56,10 +57,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film findById(int id) {
+    public Optional<Film> findById(int id) {
         String query = "SELECT film_id, name, description, release_date, duration, rating_mpa_id " +
                 "FROM films WHERE film_id=?";
-        return jdbcTemplate.queryForObject(query, this::mapRowToFilm, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(query, this::mapRowToFilm, id));
     }
 
     @Override
@@ -74,7 +75,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(Film film) {
+    public Optional<Film> update(Film film) {
         String query = "UPDATE films SET " +
                 "name=?, description=?, release_date=?, " +
                 "duration=?, rating_mpa_id=? WHERE film_id=?";
@@ -87,25 +88,25 @@ public class FilmDbStorage implements FilmStorage {
         genreDbStorage.addGenreToFilm(film);
         film.setGenres(genreDbStorage.findForFilm(film.getId()));
         if (rowsCount > 0) {
-            return film;
+            return Optional.of(film);
         }
         throw new NotFoundException("Данный фильм не найден.");
     }
 
     @Override
-    public Film like(int filmId, int userId) {
-        Film film = findById(filmId);
+    public Optional<Film> like(int filmId, int userId) {
+        Film film = findById(filmId).get();
         String query = "INSERT INTO likes (film_id, user_id) VALUES(?, ?)";
         jdbcTemplate.update(query, filmId, userId);
-        return film;
+        return Optional.of(film);
     }
 
     @Override
-    public Film removeLike(int filmId, int userId) {
-        Film film = findById(filmId);
+    public Optional<Film> removeLike(int filmId, int userId) {
+        Film film = findById(filmId).get();
         String query = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
         jdbcTemplate.update(query, filmId, userId);
-        return film;
+        return Optional.of(film);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class FilmDbStorage implements FilmStorage {
                 .description(resultSet.getString("description"))
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
                 .duration(resultSet.getInt("duration"))
-                .mpa(mpaDbStorage.findById(resultSet.getInt("rating_mpa_id")))
+                .mpa(mpaDbStorage.findById(resultSet.getInt("rating_mpa_id")).get())
                 .build();
         film.setLikes(likeDbStorage.findAll(film.getId()));
         film.setGenres(genreDbStorage.findForFilm(film.getId()));

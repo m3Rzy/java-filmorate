@@ -53,17 +53,17 @@ public class UserDbStorageTest {
     }
 
     void addEntites() {
-        userDbStorage.addUserStorage(user);
-        userDbStorage.addUserStorage(otherUser);
-        userDbStorage.addUserStorage(user2);
+        userDbStorage.add(user);
+        userDbStorage.add(otherUser);
+        userDbStorage.add(user2);
     }
 
     @DisplayName("Добавление нового пользователя.")
     @Test
     void shouldAddNewUser_isOkRequest() {
         addEntites();
-        assertEquals("Елена", userDbStorage.findUserById(1).getName());
-        assertFalse(userDbStorage.findUsers().isEmpty());
+        assertEquals("Елена", userDbStorage.findById(1).get().getName());
+        assertFalse(userDbStorage.findAll().isEmpty());
     }
 
     @DisplayName("Изменение существующего пользователя.")
@@ -71,38 +71,38 @@ public class UserDbStorageTest {
     void shouldUpdateUser_isOkRequest() {
         addEntites();
         user.setName("Ольга");
-        userDbStorage.updateUserStorage(user);
-        assertEquals("Ольга", userDbStorage.findUserById(1).getName());
+        userDbStorage.update(user);
+        assertEquals("Ольга", userDbStorage.findById(1).get().getName());
     }
 
     @DisplayName("Добавление пользователя в друзья.")
     @Test
     void shouldAddNewFriend_isOkRequest() {
         addEntites();
-        userDbStorage.addFriendStorage(user.getId(), otherUser.getId());
-        assertFalse(userDbStorage.findUserById(1).getFriends().isEmpty());
-        assertTrue(userDbStorage.findUserById(1).getFriends().contains(2));
-        assertEquals("theft", userDbStorage.findFriendsByUserIdStorage(1).get(0).getName());
+        userDbStorage.addFriend(user.getId(), otherUser.getId());
+        assertFalse(userDbStorage.findById(1).get().getFriends().isEmpty());
+        assertTrue(userDbStorage.findById(1).get().getFriends().contains(2));
+        assertEquals("theft", userDbStorage.findFriends(1).get(0).getName());
     }
 
     @DisplayName("Удаление пользователя из списка друзей.")
     @Test
     void shouldDeleteFriend_isOkRequest() {
         addEntites();
-        userDbStorage.addFriendStorage(user.getId(), otherUser.getId());
-        userDbStorage.removeFriendStorage(user.getId(), otherUser.getId());
-        assertTrue(userDbStorage.findUserById(1).getFriends().isEmpty());
+        userDbStorage.addFriend(user.getId(), otherUser.getId());
+        userDbStorage.removeFriend(user.getId(), otherUser.getId());
+        assertTrue(userDbStorage.findById(1).get().getFriends().isEmpty());
     }
 
     @DisplayName("Наличие общих друзей.")
     @Test
     void shouldGetCommonFriends_isOkRequest() {
         addEntites();
-        userDbStorage.addFriendStorage(user.getId(), user2.getId());
-        userDbStorage.addFriendStorage(otherUser.getId(), user2.getId());
-        System.out.println(userDbStorage.findCommonFriendsStorage(1, 2));
-        assertEquals(3, userDbStorage.findFriendsByUserIdStorage(2).get(0).getId());
-        assertEquals(3, userDbStorage.findFriendsByUserIdStorage(1).get(0).getId());
-        assertSame(userDbStorage.findCommonFriendsStorage(user.getId(), otherUser.getId()).get(0).getId(), user2.getId());
+        userDbStorage.addFriend(user.getId(), user2.getId());
+        userDbStorage.addFriend(otherUser.getId(), user2.getId());
+        System.out.println(userDbStorage.findCommonFriends(1, 2));
+        assertEquals(3, userDbStorage.findFriends(2).get(0).getId());
+        assertEquals(3, userDbStorage.findFriends(1).get(0).getId());
+        assertSame(userDbStorage.findCommonFriends(user.getId(), otherUser.getId()).get(0).getId(), user2.getId());
     }
 }

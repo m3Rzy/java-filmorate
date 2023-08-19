@@ -3,30 +3,31 @@ package ru.yandex.practicum.filmorate.storage.user;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserStorage {
 
     //    получение всех пользователей
-    List<User> findUsers();
+    List<User> findAll();
 
     //    получение пользователя по id
-    User findUserById(int id);
+    Optional<User> findById(int id);
 
     //    создание нового пользователя
-    void addUserStorage(User user);
+    void add(User user);
 
     //    изменение существующего пользователя
-    User updateUserStorage(User user);
+    Optional<User> update(User user);
 
     //    получение списка друзей у пользователя по id
-    List<User> findFriendsByUserIdStorage(Integer id);
+    List<User> findFriends(Integer id);
 
     //    добавление в список друзей
-    User addFriendStorage(Integer userId, Integer friendId);
+    Optional<User> addFriend(Integer userId, Integer friendId);
 
     //    удаление друга из списка
-    User removeFriendStorage(Integer userId, Integer friendId);
+    Optional<User> removeFriend(Integer userId, Integer friendId);
 
     //    обновление списка друзей
-    List<User> findCommonFriendsStorage(Integer id, Integer friendId);
+    List<User> findCommonFriends(Integer id, Integer friendId);
 }

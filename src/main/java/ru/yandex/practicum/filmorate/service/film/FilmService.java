@@ -61,7 +61,7 @@ public class FilmService {
         try {
             filmStorage.findById(id);
             log.info("Фильм {} был успешно найден с помощью id.", filmStorage.findById(id));
-            return filmStorage.findById(id);
+            return filmStorage.findById(id).get();
         } catch (RuntimeException e) {
             throw new NotFoundException("Такой фильм не найден.");
         }

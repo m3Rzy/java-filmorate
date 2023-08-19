@@ -25,7 +25,7 @@ public class UserService {
 
     public User addUser(User user) {
         userValidationService(user);
-        userStorage.addUserStorage(user);
+        userStorage.add(user);
         log.info("Пользователь {} успешно создан.", user);
         return user;
     }
@@ -33,7 +33,7 @@ public class UserService {
     public User updateUser(User user) {
         try {
             userValidationService(user);
-            userStorage.updateUserStorage(user);
+            userStorage.update(user);
             log.info("Пользователь {} успешно изменён.", user);
             return user;
         } catch (RuntimeException e) {
@@ -43,42 +43,42 @@ public class UserService {
 
     public User getUserById(int id) {
         try {
-            userStorage.findUserById(id);
-            log.info("Пользователь {} был успешно найден с помощью id.", userStorage.findUserById(id));
-            return userStorage.findUserById(id);
+            userStorage.findById(id);
+            log.info("Пользователь {} был успешно найден с помощью id.", userStorage.findById(id));
+            return userStorage.findById(id).get();
         } catch (RuntimeException e) {
             throw new NotFoundException("Такой пользователь не найден.");
         }
     }
 
     public List<User> getUsers() {
-        log.info("Количество пользователей в списке: " + userStorage.findUsers().size());
-        return userStorage.findUsers();
+        log.info("Количество пользователей в списке: " + userStorage.findAll().size());
+        return userStorage.findAll();
     }
 
     public User addFriend(int userId, int friendId) {
         if (userId <= 0 || friendId <= 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "id & friendId не могут быть отрицательными.");
         }
-        userStorage.addFriendStorage(userId, friendId);
+        userStorage.addFriend(userId, friendId);
         log.info("Пользователь {} добавил в друзья {}", userId, friendId);
-        return userStorage.findUserById(userId);
+        return userStorage.findById(userId).get();
     }
 
     public User removeFriend(int userId, int friendId) {
-        userStorage.removeFriendStorage(userId, friendId);
+        userStorage.removeFriend(userId, friendId);
         log.info("Пользователь {} удалил из друзей {}", userId, friendId);
-        return userStorage.findUserById(userId);
+        return userStorage.findById(userId).get();
     }
 
     public List<User> getFriendsByUserId(Integer id) {
-        log.info("Количество друзей: " + userStorage.findFriendsByUserIdStorage(id).size());
-        return userStorage.findFriendsByUserIdStorage(id);
+        log.info("Количество друзей: " + userStorage.findFriends(id).size());
+        return userStorage.findFriends(id);
     }
 
     public List<User> getCommonFriends(int userId, int otherId) {
-        log.info("Количество общих друзей: " + userStorage.findCommonFriendsStorage(userId, otherId));
-        return userStorage.findCommonFriendsStorage(userId, otherId);
+        log.info("Количество общих друзей: " + userStorage.findCommonFriends(userId, otherId));
+        return userStorage.findCommonFriends(userId, otherId);
     }
 
     private void userValidationService(User user) throws ValidationException {

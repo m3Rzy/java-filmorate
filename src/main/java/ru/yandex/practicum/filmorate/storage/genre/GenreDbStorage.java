@@ -35,7 +35,7 @@ public class GenreDbStorage implements GenreStorage {
                 "genre_id FROM genre ORDER BY genre_id ASC");
         while (genreRows.next()) {
             if (genreRows.getLong("film_id") == filmId) {
-                genreSet.add(findById(genreRows.getInt("genre_id")));
+                genreSet.add(findById(genreRows.getInt("genre_id")).get());
             }
         }
         return genreSet;
@@ -45,7 +45,7 @@ public class GenreDbStorage implements GenreStorage {
         if (Objects.isNull(film.getGenres())) {
             return;
         }
-        film.getGenres().forEach(genre -> genre.setName(findById(genre.getId()).getName()));
+        film.getGenres().forEach(genre -> genre.setName(findById(genre.getId()).get().getName()));
     }
 
     @Override
@@ -69,9 +69,9 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public Genre findById(int genreId) {
+    public Optional<Genre> findById(int genreId) {
         String query = "SELECT genre_id, name FROM genre_type WHERE genre_id=?";
-        return jdbcTemplate.queryForObject(query, this::mapRowToGenre, genreId);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(query, this::mapRowToGenre, genreId));
     }
 
     private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {

@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.util.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,8 +21,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findById(int id) {
-        return films.get(id);
+    public Optional<Film> findById(int id) {
+        return Optional.ofNullable(films.get(id));
     }
 
     @Override
@@ -36,26 +33,26 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film update(Film film) {
+    public Optional<Film> update(Film film) {
         film.setLikes(new HashSet<>());
         films.put(film.getId(), film);
-        return film;
+        return Optional.of(film);
     }
 
     @Override
-    public Film like(int filmId, int userId) {
-        findById(filmId).getLikes().add(userId);
-        return findById(filmId);
+    public Optional<Film> like(int filmId, int userId) {
+        findById(filmId).get().getLikes().add(userId);
+        return Optional.of(findById(filmId).get());
     }
 
     @Override
-    public Film removeLike(int filmId, int userId) {
-        if (findById(filmId).getLikes().contains(userId)) {
-            findById(filmId).getLikes().remove(userId);
+    public Optional<Film> removeLike(int filmId, int userId) {
+        if (findById(filmId).get().getLikes().contains(userId)) {
+            findById(filmId).get().getLikes().remove(userId);
         } else {
             throw new NotFoundException("Данный пользователь не ставил лайк этому фильму.");
         }
-        return findById(filmId);
+        return Optional.of(findById(filmId).get());
     }
 
     @Override

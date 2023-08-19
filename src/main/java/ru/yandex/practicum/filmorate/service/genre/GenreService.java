@@ -23,7 +23,7 @@ public class GenreService {
 
     public Genre getGenre(int genreId) {
         try {
-            return genreDbStorage.findById(genreId);
+            return genreDbStorage.findById(genreId).get();
         } catch (RuntimeException e) {
             throw new NotFoundException("Жанр не найден.");
         }

@@ -24,7 +24,7 @@ public class MpaService {
 
     public Mpa getMpaById(int ratingMpaId) {
         try {
-            return mpaDbStorage.findById(ratingMpaId);
+            return mpaDbStorage.findById(ratingMpaId).get();
         } catch (RuntimeException e) {
             throw new NotFoundException("Рейтинг mpa не найден.");
         }

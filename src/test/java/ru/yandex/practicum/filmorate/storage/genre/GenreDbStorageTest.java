@@ -58,8 +58,8 @@ public class GenreDbStorageTest {
     @DisplayName("Получение жанра по id.")
     @Test
     void shouldGetGenreById_isOkRequest() {
-        assertEquals(1, genreDbStorage.findById(1).getId());
-        assertEquals("Комедия", genreDbStorage.findById(1).getName());
+        assertEquals(1, genreDbStorage.findById(1).get().getId());
+        assertEquals("Комедия", genreDbStorage.findById(1).get().getName());
     }
 
     @DisplayName("Добавление/изменение жанра/жанров к фильму.")

@@ -42,14 +42,14 @@ public class MpaDbStorageTest {
     @DisplayName("Список всех рейтингов.")
     @Test
     void shouldGetMpas_isOkRequest() {
-        assertEquals(5, mpaDbStorage.findMpas().size());
-        assertFalse(mpaDbStorage.findMpas().isEmpty());
+        assertEquals(5, mpaDbStorage.findAll().size());
+        assertFalse(mpaDbStorage.findAll().isEmpty());
     }
 
     @DisplayName("Получение рейтинга по id.")
     @Test
     void shouldGetMpaById_isOkRequest() {
-        assertEquals("PG-13", mpaDbStorage.findMpaById(3).getName());
+        assertEquals("PG-13", mpaDbStorage.findById(3).get().getName());
     }
 
     @DisplayName("Добавление рейтинга к фильму.")
@@ -60,7 +60,7 @@ public class MpaDbStorageTest {
                 .id(10)
                 .name("RR")
                 .build());
-        mpaDbStorage.addMpaToFilm(film);
+        mpaDbStorage.add(film);
         assertNotNull(film.getMpa());
     }
 }
