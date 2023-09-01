@@ -4,9 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -14,14 +12,15 @@ import java.util.Set;
 @Builder
 public class User {
     private Integer id;
-    @Email
+    @Email(message = "Некорректно указан email.")
     @NonNull
     private String email;
-    @NotBlank
-    @NonNull
+    @NotBlank(message = "Логин не может быть пустым.")
+    @Pattern(regexp = "\\S*", message = "Логин содержит лишние пробелы.")
     private String login;
     private String name;
-    @Past
+    @NotNull
+    @Past // TODO: реализовать собственную аннотацию для birthday
     private LocalDate birthday;
     private Set<Integer> friends;
 }

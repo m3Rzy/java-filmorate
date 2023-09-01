@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -16,62 +13,62 @@ public class InMemoryUserStorage implements UserStorage {
     private int id = 0;
 
     @Override
-    public List<User> findUsers() {
+    public List<User> findAll() {
         return new ArrayList<>(users.values());
     }
 
     @Override
-    public User findUserById(int id) {
-        return users.get(id);
-    }
-
-    private int getUserId() {
-        return ++id;
+    public Optional<User> findById(int id) {
+        return Optional.ofNullable(users.get(id));
     }
 
     @Override
-    public void addUserStorage(User user) {
+    public void add(User user) {
         user.setFriends(new HashSet<>());
         user.setId(getUserId());
         users.put(user.getId(), user);
     }
 
     @Override
-    public User updateUserStorage(User user) {
+    public Optional<User> update(User user) {
         user.setFriends(new HashSet<>());
         users.put(user.getId(), user);
-        return user;
+        return Optional.of(user);
     }
 
     @Override
-    public List<User> findFriendsByUserIdStorage(Integer id) {
-        return findUsers().stream()
+    public List<User> findFriends(Integer id) {
+        return findAll().stream()
                 .filter(user -> user.getFriends().contains(id))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public User addFriendStorage(Integer userId, Integer friendId) {
-        findUserById(userId).getFriends().add(friendId);
-        findUserById(friendId).getFriends().add(userId);
-        return findUserById(userId);
+    public Optional<User> addFriend(Integer userId, Integer friendId) {
+        findById(userId).get().getFriends().add(friendId);
+        findById(friendId).get().getFriends().add(userId);
+        return findById(userId);
     }
 
     @Override
-    public User removeFriendStorage(Integer userId, Integer friendId) {
-        findUserById(userId).getFriends().remove(friendId);
-        findUserById(friendId).getFriends().remove(userId);
-        return findUserById(userId);
+    public Optional<User> removeFriend(Integer userId, Integer friendId) {
+        findById(userId).get().getFriends().remove(friendId);
+        findById(friendId).get().getFriends().remove(userId);
+        return findById(userId);
     }
 
     @Override
-    public List<User> findCommonFriendsStorage(Integer id, Integer otherId) {
+    public List<User> findCommonFriends(Integer id, Integer otherId) {
         List<User> friends = new ArrayList<>();
-        for (Integer i : findUserById(id).getFriends()) {
-            if (findUserById(otherId).getFriends().contains(i)) {
-                friends.add(findUserById(i));
+        for (Integer i : findById(id).get().getFriends()) {
+            if (findById(otherId).get().getFriends().contains(i)) {
+                friends.add(findById(i).get());
             }
         }
         return friends;
+    }
+
+    private int getUserId() {
+        return ++id;
     }
 }
